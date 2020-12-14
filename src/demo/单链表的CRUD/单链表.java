@@ -1,29 +1,35 @@
 package demo.单链表的CRUD;
 
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Stack;
 
 public class 单链表 {
     public static void main(String[] args) {
         SinglenLingkedList list = new SinglenLingkedList();
-        Node node = new Node("san", 0);
-        Node node2 = new Node("zhangsan", 1);
-        Node node3 = new Node("zhang1san", 4);
-        Node node54 = new Node("zhang2san", 3);
-        Node node4 = new Node("zhang333san", 2);
-        list.add1(node2);
-        list.add1(node3);
-        list.reverse2(list.head);
-
+        Node node1 = new Node(1, new Node(3, new Node()));
+        Node node2 = new Node(0);
+        Node node = list.mergeList(node1, node2);
+        System.out.println(node);
     }
 }
 
 class SinglenLingkedList {
-    List list =new LinkedList();
-    Node head = new Node("", 5);
-    Node arr[] =new Node[5];
-    int i=0;
+    List list = new LinkedList();
+    Node head = new Node("", 0);
+    Node arr[] = new Node[5];
+    int i = 0;
+
+    @Override
+    public String toString() {
+        return "SinglenLingkedList{" +
+                "list=" + list +
+                ", head=" + head +
+                '}';
+    }
+
     //遍历链表
     public void list() {
         Node temp = head.next;
@@ -41,22 +47,73 @@ class SinglenLingkedList {
 
     }
 
+    //合并俩个有序单链表
+    //并且合并后依然有序
+    //方法1：递归
+    public Node mergeList(Node node1, Node node2) {
+        //这几个if必不可少
+        if (node1 == null && node2 == null) {
+            return null;
+        }
+        if (node1 == null) {
+            return node2;
+        }
+        if (node2 == null) {
+            return node1;
+        }
+        Node head = null;
+        if (node1.id > node2.id) {
+            head = node2;
+            head.next = mergeList(node1, node2.next);
+        } else {
+            head = node1;
+            head.next = mergeList(node1.next, node2);
+        }
+        return head;
+    }
+
+    //方法2：非递归
+    public Node mergeTwoLists(Node node1, Node node2) {
+
+        Node head = new Node();
+        Node temp = head;
+        while (node1 != null && node2 != null) {
+
+            if (node1.id > node2.id) {
+                temp.next = node2;
+                node2 = node2.next;
+                temp = temp.next;
+            } else {
+                temp.next = node1;
+                node1 = node1.next;
+                temp = temp.next;
+            }
+        }
+        if (node1==null){
+            temp.next=node2;
+        }else {
+            temp.next=node1;
+        }
+        return head.next;
+    }
+
+
     //单链表的反转
     //头插法，顺序遍历原链表，从原链表第一个开始取，放进反转链表的头，每次都插头，用next保存原链表即将插的下一个节点，这样cur改变后还能再回来
     public void reverseList(Node head) {
-        if (head.next==null||head.next.next==null){
-            return ;
+        if (head.next == null || head.next.next == null) {
+            return;
         }
-        Node cur =head.next;
-        Node next=null;
-        Node reverseHead = new Node("",0);
-        while (cur!=null){
-            next=cur.next;
-            cur.next=reverseHead.next;
-            reverseHead.next=cur;
-            cur=next;
+        Node cur = head.next;
+        Node next = null;
+        Node reverseHead = new Node("", 0);
+        while (cur != null) {
+            next = cur.next;
+            cur.next = reverseHead.next;
+            reverseHead.next = cur;
+            cur = next;
         }
-        head.next=reverseHead.next;
+        head.next = reverseHead.next;
     }
 
 
@@ -65,17 +122,31 @@ class SinglenLingkedList {
     public Node[] reverse(Node head4) {
         if (head4 != null) {
             reverse(head4.next);
-            arr[i]=head4;
+            arr[i] = head4;
             i++;
         }
         return arr;
     }
-    //方法2：反转后再遍历
-    public void reverse2(Node node){
+
+    //方法2：反转后再遍历，怕破坏原链表结构，可以将反转后的链表赋给一个新定义的
+    public void reverse2(Node node) {
         SinglenLingkedList lingkedList = new SinglenLingkedList();
         lingkedList.reverseList(node);
         lingkedList.add(node);
         lingkedList.list();
+    }
+
+    //方法3：用栈先进后出的原理,优点：不破坏原链表的结构
+    public void reverse3(Node head) {
+        Stack stack = new Stack();
+        Node node = head.next;
+        while (node != null) {
+            stack.push(node);
+            node = node.next;
+        }
+        while (stack.size() > 0) {
+            System.out.println(stack.pop());
+        }
     }
 
     //查找单链表中的倒数第K个节点
@@ -212,6 +283,21 @@ class Node {
 
     public Node(String name, int id) {
         this.name = name;
+        this.id = id;
+    }
+
+    public Node(String name, int id, Node next) {
+        this.name = name;
+        this.id = id;
+        this.next = next;
+    }
+
+    public Node(int id, Node next) {
+        this.id = id;
+        this.next = next;
+    }
+
+    public Node(int id) {
         this.id = id;
     }
 
