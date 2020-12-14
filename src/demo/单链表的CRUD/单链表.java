@@ -1,6 +1,9 @@
 package demo.单链表的CRUD;
 
 
+import java.util.LinkedList;
+import java.util.List;
+
 public class 单链表 {
     public static void main(String[] args) {
         SinglenLingkedList list = new SinglenLingkedList();
@@ -11,13 +14,14 @@ public class 单链表 {
         Node node4 = new Node("zhang333san", 2);
         list.add1(node2);
         list.add1(node3);
-        System.out.println(list.head);
-        list.reverseList(list.head);
+        list.reverse2(list.head);
+
     }
 }
 
 class SinglenLingkedList {
-    Node head = new Node("", 0);
+    List list =new LinkedList();
+    Node head = new Node("", 5);
     Node arr[] =new Node[5];
     int i=0;
     //遍历链表
@@ -38,24 +42,26 @@ class SinglenLingkedList {
     }
 
     //单链表的反转
-    public Node reverseList(Node node) {
-        SinglenLingkedList singlenLingkedList =new SinglenLingkedList();
-        Node[] nodes = singlenLingkedList.reverse(node);
-        Node temp =node;
-        for (Node node1:nodes){
-            node1.next=null;
-            while(true){
-                if (temp.next==null){
-                    break;
-                }
-                temp=temp.next;
-            }
-            temp.next = node1;
+    //头插法，顺序遍历原链表，从原链表第一个开始取，放进反转链表的头，每次都插头，用next保存原链表即将插的下一个节点，这样cur改变后还能再回来
+    public void reverseList(Node head) {
+        if (head.next==null||head.next.next==null){
+            return ;
         }
-        return temp;
+        Node cur =head.next;
+        Node next=null;
+        Node reverseHead = new Node("",0);
+        while (cur!=null){
+            next=cur.next;
+            cur.next=reverseHead.next;
+            reverseHead.next=cur;
+            cur=next;
+        }
+        head.next=reverseHead.next;
     }
 
+
     //单链表的倒序遍历
+    //方法1：递归
     public Node[] reverse(Node head4) {
         if (head4 != null) {
             reverse(head4.next);
@@ -63,6 +69,13 @@ class SinglenLingkedList {
             i++;
         }
         return arr;
+    }
+    //方法2：反转后再遍历
+    public void reverse2(Node node){
+        SinglenLingkedList lingkedList = new SinglenLingkedList();
+        lingkedList.reverseList(node);
+        lingkedList.add(node);
+        lingkedList.list();
     }
 
     //查找单链表中的倒数第K个节点
