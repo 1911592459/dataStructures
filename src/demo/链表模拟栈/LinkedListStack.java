@@ -1,7 +1,5 @@
 package demo.链表模拟栈;
 
-import java.util.Stack;
-
 public class LinkedListStack {
     public static void main(String[] args) {
         SingleLinkedStack list = new SingleLinkedStack();
@@ -11,7 +9,7 @@ public class LinkedListStack {
         Node1 node4 = new Node1(0);
         list.push(node1);
         list.push(node2);
-        System.out.println(list.toString());
+        System.out.println(list);
     }
 }
 
@@ -28,14 +26,18 @@ class SingleLinkedStack {
     //头插法
     public void push(Node1 node) {
         Node1 temp = top;
-        if (temp.getNext()==null){//第一次插入
+        if (temp.getNext() == null) {//第一次插入
             temp.setNext(node);
             return;
         }
         node.next = temp.next;
         temp.next = node;
     }
-
+    //出栈
+    public void pop(){
+        System.out.println(top.getId());
+        top=top.getNext();
+    }
 
 }
 
